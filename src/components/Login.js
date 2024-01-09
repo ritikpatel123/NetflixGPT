@@ -7,12 +7,11 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../Firebase.js";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice.js";
+import { NETFLIX_BG, USER_AVATAR } from "../utils/constants.js";
 
 const Login = () => {
-    const navigate=useNavigate();
     const dispatch=useDispatch();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -42,7 +41,7 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName:name.current.value, photoURL: "https://lh3.googleusercontent.com/a/ACg8ocJruqbJK63sML_z4V65PNzkzGT_mXqYKo2SRij4gxkxEM2l=s576-c-no"
+            displayName:name.current.value, photoURL: USER_AVATAR
           }).then(() => {
             const {uid,email,displayName,photoURL} = auth.currentUser;
             dispatch(addUser({
@@ -51,8 +50,6 @@ const Login = () => {
               displayName,
               photoURL,
             }))
-            navigate('/Browse')
-            
           }).catch((error) => {
             setErrorMessage(error);
           });
@@ -71,7 +68,6 @@ const Login = () => {
       )
         .then((userCredential) => {
           
-          navigate('/Browse')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -86,7 +82,7 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/c38a2d52-138e-48a3-ab68-36787ece46b3/eeb03fc9-99c6-438e-824d-32917ce55783/IN-en-20240101-popsignuptwoweeks-perspective_alpha_website_large.jpg"
+          src={NETFLIX_BG}
           alt="baground"
         />
       </div>
