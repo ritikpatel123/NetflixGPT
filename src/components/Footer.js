@@ -5,7 +5,7 @@ import { PAGE } from '../router/routes';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#141414] rounded-lgd shadow ">
+    <footer className="bg-[#141414] rounded-lgd shadow bottom-0" style={{flexShrink:0}}>
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="flex items-center flex-col md:flex-row justify-between">
           <a href="#!" className="flex items-center mb-6 md:mb-2">
