@@ -2,7 +2,7 @@ import { createHashRouter, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { PAGE } from "./routes";
-import NotFoundPage from "../components/NotFoundPage";
+import NotFoundPage from "../pages/NotFoundPage";
 import Spinner from "../components/Spinner";
 
 import App from "../App";
