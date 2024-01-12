@@ -1,73 +1,127 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../Firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, removeUser } from "../utils/userSlice";
-import { LOGO, SUPPORTED_LANGUAGES } from "../utils/constants";
-import { toggleGptSearchView } from "../utils/gptSlice";
+import {  addUser, removeUser } from "../utils/userSlice";
+import { AVATAR_RED, LOGO, SUPPORTED_LANGUAGES } from "../utils/constants";
 import { changeLanguage } from "../utils/confiSlice";
+import { PAGE } from "../router/routes";
+import { setAuthenticated } from "../utils/AuthSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((store) => store.user);
-  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {})
-      .catch(() => {
-        navigate("/error");
-      });
-  };
+  const dropdownRef = useRef(null);
 
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      dispatch(removeUser())
+      navigate(PAGE.HOME)
+    }).catch((error) => {
+    });
+  }
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const { uid, email, displayName, photoURL } = user;
-        dispatch(
-          addUser({
-            uid: uid,
-            email,
-            displayName,
-            photoURL,
-          })
-        );
-        navigate("/Browse");
+        const { uid, displayName, email, photoURL, phoneNumber } = user;
+        dispatch(addUser({
+          uid: uid,
+          displayName: displayName,
+          photoURL: photoURL,
+          email: email,
+          phoneNumber: phoneNumber
+        }));
+        // console.log('signed in')
+        dispatch(setAuthenticated(true))
       } else {
-        dispatch(removeUser());
-        navigate("/");
+        // console.log('signed out')
+        dispatch(setAuthenticated(false))
+        dispatch(removeUser())
       }
     });
+
+    // Unsubscribe when component unmounted
     return () => unsubscribe();
   }, []);
+  
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
-  const handleSearchGpt=()=>{
-    dispatch(toggleGptSearchView())
-  };
 
+
+  const handlerDropDown = () => {
+    setIsOpen(!isOpen)
+  }
   const handleLanguageChange=(e)=>{
     dispatch(changeLanguage(e.target.value))
   }
   return (
-    <div className="absolute  w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between align-middle ">
-      <img className="w-44" src={LOGO} alt="logo" />
+    <div className="fixed z-50  text-white bg-black  w-screen px-8  bg-gradient-to-b from-black  flex">
+      <div className="flex ">
+      <img className="w-36 h-14 m-2" src={LOGO} alt="logo" />
+
+      </div>
+     
       {user && (
-        <div className="flex p-2">
-          <select className="my-2 p-2 bg-transparent  text-white" onChange={handleLanguageChange}>
+        
+        <div className="flex p-2 w-[100%] justify-between align-middle">
+          <div className="flex ">
+            <Link className=" align-middle" > <h2 className="py-2  pl-16 mt-3 ml-10 text-sm" >Home</h2></Link>
+           <Link to={'/tv-shows'}className=" align-middle" > <h2 className="py-2 pl-3 m-3  text-sm" >Tv Show</h2></Link>
+          <Link to={'/movies'} className=" align-middle" > <h2 className="py-2 pl-3 m-3 text-sm" >Movies</h2></Link>
+           <Link to={'/new-and-popular'}className=" align-middle" > <h2 className="py-2 pl-3 m-3 text-sm" >New & Popular </h2></Link>
+           </div>
+           <div className="flex">
+          <select className="my-2 p-2 bg-transparent text-sm text-white" onChange={handleLanguageChange}>
             {SUPPORTED_LANGUAGES.map(lang=><option key={lang.identifier} value={lang.identifier}>{lang.name}</option>)}
           </select>
-          <button className="py-2 px-4 m-2 bg-purple-1000 text-white rounded-md "
-           onClick={handleSearchGpt}>
-            {showGptSearch?"HomePage":"Search GPT"}
+          <Link to={'/search'}>
+          <button className="py-3 px-4 m-2 bg-purple-1000 text-sm text-white rounded-md "
+           >
+           Search GPT
           </button>
-          <img className="w-12 h-12" src={user?.photoURL} alt="usericon" />
-          <button
-            onClick={handleSignOut}
-            className=" font-bold text-xl text-white p-2"
-          >
-            LogOut
-          </button>
+          </Link>
+          <div className="profile-dropdown p-4 relative" ref={dropdownRef}>
+              <div className="flex items-center gap-3 cursor-pointer" onClick={handlerDropDown}>
+                <div className="thumb aspect-square w-8 h-8 bg-gray-800">
+                  <img src={AVATAR_RED} alt={user.displayName} />
+                </div>
+                <div className="text-sm hidden lg:block">{user.displayName}</div>
+              </div>
+              {isOpen &&
+                <div className="bg-black/95 absolute z-50 right-0 top-10 min-w-[170px] pt-2 border border-gray-900 rounded-md">
+                  <a href='#!' className='flex items-center px-4 py-2 gap-3 text-xs text-slate-500 hover:text-white'>
+                    <div className="w-5 h-5 bg-cyan-500"></div>
+                    <div className='title'>Ritik</div>
+                  </a>
+                  <a href='#!' className='flex items-center px-4 py-2 gap-3 text-xs text-slate-500 hover:text-white'>
+                    <div className="w-5 h-5 bg-green-500"></div>
+                    <div className='title'>Child</div>
+                  </a>
+                  <Link  className='flex items-center px-4 py-2 gap-3 text-xs text-slate-500 hover:text-white'>
+                    <div className="w-5 h-5 bg-gray-700"></div>
+                    <div className='title'>Manage Profile</div>
+                  </Link>
+                  <div className="px-2 gap-3 text-xs text-slate-300 flex justify-center items-center border-t border-gray-700 mt-4 hover:text-white">
+                    <button className='p-3' onClick={handleSignOut} > Sign Out</button>
+                  </div>
+                </div>
+              }
+            </div>
+         
+          </div>
         </div>
       )}
     </div>

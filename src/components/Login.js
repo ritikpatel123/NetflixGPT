@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import Header from "./Header";
 import { validateFormData } from "../utils/Validate";
 import {
   createUserWithEmailAndPassword,
@@ -10,6 +9,7 @@ import { auth } from "../Firebase.js";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice.js";
 import { NETFLIX_BG, USER_AVATAR } from "../utils/constants.js";
+import { Link, Navigate } from "react-router-dom";
 
 const Login = () => {
     const dispatch=useDispatch();
@@ -24,7 +24,7 @@ const Login = () => {
   const password = useRef(null);
 
   const handleButtonClick = () => {
-    console.log(email.current.value, " login.js");
+    // console.log(email.current.value, " login.js");
     const message = validateFormData(
       email.current.value,
       password.current.value
@@ -50,6 +50,7 @@ const Login = () => {
               displayName,
               photoURL,
             }))
+            Navigate('/browse')
           }).catch((error) => {
             setErrorMessage(error);
           });
@@ -67,7 +68,7 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-          
+          Navigate('/browse')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -79,7 +80,6 @@ const Login = () => {
 
   return (
     <div>
-      <Header />
       <div className="absolute">
         <img
           src={NETFLIX_BG}
@@ -115,12 +115,13 @@ const Login = () => {
           className="p-4  my-4 w-full bg-[#333333]"
         />
         <p className=" text-red-600 font-bold py-4 "> {errorMessage}</p>
-        <button
+       <Link > <button
           className="p-2 my-6 bg-red-700 w-full rounded-lg  "
           onClick={handleButtonClick}
         >
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
+        </Link>
         <p className="py-4 cursor-pointer" onClick={toggleSignInform}>
           {isSignInForm
             ? "New to Netflix? Signup now"
