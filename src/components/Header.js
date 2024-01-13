@@ -87,12 +87,12 @@ const Header = () => {
             {SUPPORTED_LANGUAGES.map(lang=><option key={lang.identifier} value={lang.identifier}>{lang.name}</option>)}
           </select>
           <Link to={'/search'}>
-          <button className="py-3 px-4 m-2 bg-purple-1000 text-sm text-white rounded-md "
+          <button className="py-8 px-4 m- bg-purple-1000 text-sm text-white rounded-md "
            >
            {isLargeScreen?"Search GPT":"Search"}
           </button>
           </Link>
-          <div className="profile-dropdown p-4 relative" ref={dropdownRef}>
+          <div className="profile-dropdown p-6 relative" ref={dropdownRef}>
               <div className="flex items-center gap-3 cursor-pointer" onClick={handlerDropDown}>
                 <div className="thumb aspect-square w-8 h-8 bg-gray-800">
                   <img src={AVATAR_RED} alt={user.displayName} />
@@ -126,8 +126,8 @@ const Header = () => {
   return (
     <div className="fixed z-50  text-white  bg-black  opacity-70 md:opacity-100 w-screen px-8  bg-gradient-to-b from-black md:flex">
       
-      <div className=" flex justify-between">
-      <img className="w-24 h-12 mt-6 md:w-38 h-14 m-2  mt-2" src={LOGO} alt="logo" /> 
+      <div className=" flex justify-between align-middle">
+      <img className="w-24 h-12  md:w-38 h-14 m-3    " src={LOGO} alt="logo" /> 
       <div>
       {
         !isLargeScreen && user && <NavbarItem/>
@@ -141,10 +141,10 @@ const Header = () => {
         
         <div className=" md:flex  w-[100%] justify-between align-middle">
           <div className="flex " style={{transition: "all 0.5s ease 0s", transform: "translateY(0px)"}}>
-            <Link className=" align-middle" > <h2 className=" m-2  pl-4 md:py-2 md:pl-16  m-3 ml-10  text-sm" >Home</h2></Link>
-           <Link to={'/tv-shows'}className=" align-middle" > <h2 className=" m-2  md:py-2 pl-3 m-3 text-sm" >Tv Show</h2></Link>
-          <Link to={'/movies'} className=" align-middle" > <h2 className=" m-2 md:py-2 pl-3 m-3 text-sm" >Movies</h2></Link>
-           <Link to={'/new-and-popular'}className=" align-middle" > <h2 className=" m-2 md:py-2 pl-3 m-3 text-sm" >New & Popular </h2></Link>
+            <Link className=" align-middle" > <h2 className=" m-2  pl-4 md:py-3 md:pl-16  mt-5 ml-10  text-sm" >Home</h2></Link>
+           <Link to={'/tv-shows'}className=" align-middle" > <h2 className=" m-2  md:py-3 pl-3 mt-5 text-sm" >Tv Show</h2></Link>
+          <Link to={'/movies'} className=" align-middle" > <h2 className=" m-2 md:py-3 pl-3 mt-5 text-sm" >Movies</h2></Link>
+           <Link to={'/new-and-popular'}className=" align-middle" > <h2 className=" m-2 md:py-3 pl-3 mt-5 text-sm" >New & Popular </h2></Link>
            </div>
            {
             isLargeScreen && <NavbarItem/>  
