@@ -14,6 +14,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((store) => store.user);
+  const [isLargeScreen,setIsLargeScreen]=useState(false);
   const dropdownRef = useRef(null);
 
   const handleSignOut = () => {
@@ -59,7 +60,18 @@ const Header = () => {
     };
   }, []);
 
+  
+  const handleResize = () => {
+    setIsLargeScreen(window.innerWidth > 768);
+  };
 
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handlerDropDown = () => {
     setIsOpen(!isOpen)
@@ -67,30 +79,17 @@ const Header = () => {
   const handleLanguageChange=(e)=>{
     dispatch(changeLanguage(e.target.value))
   }
-  return (
-    <div className="fixed z-50  text-white bg-black  w-screen px-8  bg-gradient-to-b from-black  flex">
-      <div className="flex ">
-      <img className="w-36 h-14 m-2" src={LOGO} alt="logo" />
 
-      </div>
-     
-      {user && (
-        
-        <div className="flex p-2 w-[100%] justify-between align-middle">
-          <div className="flex ">
-            <Link className=" align-middle" > <h2 className="py-2  pl-16 mt-3 ml-10 text-sm" >Home</h2></Link>
-           <Link to={'/tv-shows'}className=" align-middle" > <h2 className="py-2 pl-3 m-3  text-sm" >Tv Show</h2></Link>
-          <Link to={'/movies'} className=" align-middle" > <h2 className="py-2 pl-3 m-3 text-sm" >Movies</h2></Link>
-           <Link to={'/new-and-popular'}className=" align-middle" > <h2 className="py-2 pl-3 m-3 text-sm" >New & Popular </h2></Link>
-           </div>
-           <div className="flex">
+  const NavbarItem=()=>{
+    return (
+      <div className="flex">
           <select className="my-2 p-2 bg-transparent text-sm text-white" onChange={handleLanguageChange}>
             {SUPPORTED_LANGUAGES.map(lang=><option key={lang.identifier} value={lang.identifier}>{lang.name}</option>)}
           </select>
           <Link to={'/search'}>
           <button className="py-3 px-4 m-2 bg-purple-1000 text-sm text-white rounded-md "
            >
-           Search GPT
+           {isLargeScreen?"Search GPT":"Search"}
           </button>
           </Link>
           <div className="profile-dropdown p-4 relative" ref={dropdownRef}>
@@ -122,6 +121,35 @@ const Header = () => {
             </div>
          
           </div>
+    )
+  }
+  return (
+    <div className="fixed z-50  text-white  bg-black  opacity-70 md:opacity-100 w-screen px-8  bg-gradient-to-b from-black md:flex">
+      
+      <div className=" flex justify-between">
+      <img className="w-24 h-12 mt-6 md:w-38 h-14 m-2  mt-2" src={LOGO} alt="logo" /> 
+      <div>
+      {
+        !isLargeScreen && user && <NavbarItem/>
+
+      }
+      </div>
+      </div>
+
+     
+      {user && (
+        
+        <div className=" md:flex  w-[100%] justify-between align-middle">
+          <div className="flex " style={{transition: "all 0.5s ease 0s", transform: "translateY(0px)"}}>
+            <Link className=" align-middle" > <h2 className=" m-2  pl-4 md:py-2 md:pl-16  m-3 ml-10  text-sm" >Home</h2></Link>
+           <Link to={'/tv-shows'}className=" align-middle" > <h2 className=" m-2  md:py-2 pl-3 m-3 text-sm" >Tv Show</h2></Link>
+          <Link to={'/movies'} className=" align-middle" > <h2 className=" m-2 md:py-2 pl-3 m-3 text-sm" >Movies</h2></Link>
+           <Link to={'/new-and-popular'}className=" align-middle" > <h2 className=" m-2 md:py-2 pl-3 m-3 text-sm" >New & Popular </h2></Link>
+           </div>
+           {
+            isLargeScreen && <NavbarItem/>  
+           }
+          
         </div>
       )}
     </div>

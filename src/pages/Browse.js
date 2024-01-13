@@ -20,7 +20,7 @@ const Browse = () => {
 
     return (
       <div className="bg-black">
-        <div className="-mt-52  pl-7 relative z-20">
+        <div className="-mt-20 md:-mt-52  pl-7 relative z-20">
           <MovieList title={"Now Playing"} movies={movies.now_playing} />
 
           <MovieList
@@ -50,7 +50,7 @@ const Browse = () => {
       {
         movies.now_playing ? <MainContainer movie={"now_playing"} />: <div className=" h-screen bg-black"></div>
       }
-      
+
       <SecondaryConatiner />
     </div>
   );

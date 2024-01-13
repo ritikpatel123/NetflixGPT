@@ -6,8 +6,8 @@ import { NETFLIX_BG } from "../utils/constants";
 const GptSearch = () => {
   return (
     <div>
-      <div className=" fixed  -z-10">
-        <img src={NETFLIX_BG} alt="baground" />
+      <div className=" absolute  -z-10">
+        <img  className="fixed h-[100%]" src={NETFLIX_BG} alt="background" />
       </div>
       <GptSearchBar />
       <GptSearchContainer />
